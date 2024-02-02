@@ -2,15 +2,26 @@
 
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { useEffect, useState } from "react";
+import { Dispatch, SetStateAction, useEffect, useState } from "react";
+import { Wallpaper } from "@/types/wallpaper";
 
-export default function () {
+interface Props {
+  wallpapers: Wallpaper[];
+  setWallpapers: Dispatch<SetStateAction<Wallpaper[]>>;
+}
+
+export default function ({ setWallpapers }: Props) {
   const [description, setDescription] = useState("");
+  const [loading, setLoading] = useState(false);
+
+  const [wallpaper, setWallpaper] = useState<Wallpaper | null>(null);
 
   const generateWallpaper = async function () {
     const param = {
       description: description,
     };
+    setLoading(true);
+
     const result = await fetch("/api/gen-wallpaper", {
       method: "POST",
       body: JSON.stringify(param),
@@ -18,9 +29,15 @@ export default function () {
 
     const { data } = await result.json();
 
+    // console.log("before wallpapers:" + wallpapers);
     if (data) {
-      console.log("new wallpaper", data);
+      const wallpaper: Wallpaper = data;
+      setWallpaper(wallpaper);
+
+      setWallpapers((wallpapers: Wallpaper[]) => [wallpaper, ...wallpapers]);
     }
+    // console.log("after wallpapers:" + wallpapers);
+    setLoading(false);
   };
 
   const handleSubmit = async function () {
@@ -33,9 +50,9 @@ export default function () {
     await generateWallpaper();
   };
 
-  useEffect(() => {
-    console.log("current desc:", description);
-  }, [description]);
+  // useEffect(() => {
+  //   console.log("current desc:", description);
+  // }, [description]);
 
   return (
     <div className="max-w-4xl flex items-center mx-auto">
@@ -44,9 +61,10 @@ export default function () {
         placeholder="请输入想要生成的壁纸描述"
         value={description}
         onChange={(e) => setDescription(e.target.value)}
+        disabled={loading}
       />
-      <Button className="ml-8" onClick={handleSubmit}>
-        提交
+      <Button className="ml-8" onClick={handleSubmit} disabled={loading}>
+        {loading ? "生成中..." : "提交"}
       </Button>
     </div>
   );

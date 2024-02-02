@@ -86,7 +86,7 @@ export default function () {
             </a>
           </div>
           <p className="max-[479px]:text-sm">
-            © Copyright 2021. All rights reserved.
+            © Copyright 2024. All rights reserved.
           </p>
         </div>
       </div>

@@ -1,5 +1,3 @@
-import Input from "@/components/input";
-
 export default function () {
   return (
     <section>
@@ -26,7 +24,6 @@ export default function () {
         alt=""
         className="absolute bottom-auto left-auto right-0 top-0 -z-10 inline-block max-[479px]:hidden"
       />
-      <Input />
     </section>
   );
 }
